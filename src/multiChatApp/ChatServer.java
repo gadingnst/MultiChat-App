@@ -1,13 +1,13 @@
 package multiChatApp;
-/* 
- * 
- * author: sgnzst
- * 
- * */
+
 import java.io.*;
 import java.net.*;
 import java.util.*;
- 
+
+/**
+*
+* @author sgnzst
+*/ 
 public class ChatServer {
  
     private static int uniqueId;
@@ -16,7 +16,7 @@ public class ChatServer {
     private boolean keepGoing;
  
     public ChatServer() {
-        this.port = 9999;
+        this.port = 8000;
         clients = new ArrayList<>();
     }
  

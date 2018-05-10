@@ -25,6 +25,10 @@ public class ChatCellRenderer extends JLabel implements ListCellRenderer<String>
         return initImage.getScaledInstance(40,40,Image.SCALE_SMOOTH);
     }
 
+    private void doInSwingWorker(){
+
+    }
+
     @Override
     public Component getListCellRendererComponent(JList<? extends String> list, String value, int index, boolean isSelected, boolean cellHasFocus) {
         ImageIcon imageIcon= null;

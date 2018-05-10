@@ -4,10 +4,6 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
-/**
-*
-* @author sgnzst
-*/ 
 public class ChatServer {
  
     private static int uniqueId;
@@ -116,8 +112,7 @@ public class ChatServer {
  
         @Override
         public void run() {
-            boolean keepGoing = true;
-            while (keepGoing) {
+            while (true) {
  
                 String message;
                 try {

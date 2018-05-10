@@ -165,6 +165,7 @@ public class ChatServer {
                 }
             } catch (Exception e) {
             }
+
             try {
                 if (sInput != null) {
                     sInput.close();
@@ -175,7 +176,7 @@ public class ChatServer {
                 if (socket != null) {
                     socket.close();
                 }
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
         }
  

@@ -6,15 +6,14 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorCompletionService;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
  
-/**
- *
- * @author sgnzst
- */
-@SuppressWarnings("serial")
 public class ChatClient extends javax.swing.JFrame {
 
     private ObjectInputStream input;
@@ -29,12 +28,12 @@ public class ChatClient extends javax.swing.JFrame {
         initComponents();
     }
  
-    public boolean start() {
+    public void start() {
         try {
             socket = new Socket(server, port);
         } catch (Exception ec) {
             System.out.println("Error connectiong to server:" + ec);
-            return false;
+            return;
         }
  
         String msg = "Connection accepted " + socket.getInetAddress() + ":" + socket.getPort();
@@ -45,7 +44,7 @@ public class ChatClient extends javax.swing.JFrame {
             output = new ObjectOutputStream(socket.getOutputStream());
         } catch (IOException eIO) {
             System.out.println("Exception creating new Input/output Streams: " + eIO);
-            return false;
+            return;
         }
  
         new ChatClient.ListenFromServer().start();
@@ -57,10 +56,8 @@ public class ChatClient extends javax.swing.JFrame {
         } catch (IOException eIO) {
             System.out.println("Exception doing login : " + eIO);
             disconnect();
-            return false;
         }
- 
-        return true;
+
     }
  
     private void disconnect() {
@@ -91,6 +88,7 @@ public class ChatClient extends javax.swing.JFrame {
     }
  
     private void initComponents() {
+        jList = new JList<>();
         jScrollPane1 = new javax.swing.JScrollPane();
         viewTextArea = new javax.swing.JTextArea();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -114,20 +112,13 @@ public class ChatClient extends javax.swing.JFrame {
         viewTextArea.setFocusable(false);
         jScrollPane1.setViewportView(viewTextArea);
  
-        jScrollPane2.setViewportView(clientTable);
- 
-        postTextField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                postTextFieldActionPerformed(evt);
-            }
-        });
+//        jScrollPane2.setViewportView(clientTable);
+        jScrollPane2.setViewportView(jList);
+
+        postTextField.addActionListener(this::postTextFieldActionPerformed);
  
         kirimButton.setText("Kirim");
-        kirimButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                kirimButtonActionPerformed(evt);
-            }
-        });
+        kirimButton.addActionListener(this::kirimButtonActionPerformed);
  
         jLabel2.setText("Server");
  
@@ -135,18 +126,14 @@ public class ChatClient extends javax.swing.JFrame {
  
         jLabel3.setText("Port");
  
-        portTextField.setText("9999");
+        portTextField.setText("8000");
  
         masukButton.setText("Masuk");
-        masukButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                masukButtonActionPerformed(evt);
-            }
-        });
+        masukButton.addActionListener(this::masukButtonActionPerformed);
  
         jLabel4.setText("Username");
  
-        usernameTextField.setText("animous");
+        usernameTextField.setText("anonymous");
  
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -229,7 +216,7 @@ public class ChatClient extends javax.swing.JFrame {
         kirimButtonActionPerformed(evt);
     }
  
-    public static void main(String args[]) {
+    public static void main(String args[]) throws IllegalAccessException {
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -237,25 +224,15 @@ public class ChatClient extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(ChatClient.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(ChatClient.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(ChatClient.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(ChatClient.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
- 
+
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new ChatClient().setVisible(true);
-            }
-        });
+        java.awt.EventQueue.invokeLater(() -> new ChatClient().setVisible(true));
     }
-    
+
+    private JList<String> jList;
     private javax.swing.JTable clientTable;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -302,7 +279,17 @@ public class ChatClient extends javax.swing.JFrame {
                             clients.remove(pengirim);
                             break;
                         case "list":
-                            setTable(text);
+//                            setTable(text);
+//                            String [] rawNames = text.split(":");
+//
+//                            for(String s : rawNames){
+//                                if(!s.equals("---")){
+//                                    Logger.getLogger(ChatClient .class.getName()).info("case::list::rawNames >> " +s);
+//                                }
+//                            }
+
+                            Logger.getLogger(ChatClient.class.getName()).info("case::list >> " + text);
+                            setJListModel(text);
                             break;
                     }
                 } catch (IOException e) {
@@ -312,7 +299,20 @@ public class ChatClient extends javax.swing.JFrame {
                 }
             }
         }
- 
+
+
+        private void setJListModel(String text) {
+            List<String> ss = new ArrayList<>();
+            String [] rawNames = text.split(":");
+
+            for(String s : rawNames){
+                if(!s.equals("---")){
+                    ss.add(s);
+                }
+            }
+            jList.setModel(new CustomListModel(ss));
+            jList.setCellRenderer(new ChatCellRenderer());
+        }
         private void setTable(String text) {
             int rows = text.split(":").length - 1;
             Object[][] data = new Object[rows][1];
@@ -322,7 +322,6 @@ public class ChatClient extends javax.swing.JFrame {
             }
  
             String[] header = {"Clients"};
- 
             clientTable.setModel(new DefaultTableModel(data, header));
         }
     }

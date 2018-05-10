@@ -29,8 +29,12 @@ public class ChatCellRenderer extends JLabel implements ListCellRenderer<String>
     public Component getListCellRendererComponent(JList<? extends String> list, String value, int index, boolean isSelected, boolean cellHasFocus) {
         ImageIcon imageIcon= null;
 
+        String cloud = "https://itpolsri.org/ftpclients/cb2016/icons";
+        String local = "http://192.168.43.27/assets/icons/";
+
         try {
-            URL u = new URL("https://itpolsri.org/ftpclients/cb2016/icons/"+value+".jpeg");
+
+            URL u = new URL(local+value+".jpeg");
             HttpURLConnection http = (HttpURLConnection) u.openConnection();
             imageIcon = new ImageIcon(u);
             imageIcon.setImage(resizeImage(imageIcon));
@@ -40,7 +44,7 @@ public class ChatCellRenderer extends JLabel implements ListCellRenderer<String>
             System.err.println("Response code:: " + responseCode);
             switch (responseCode) {
                 case HttpURLConnection.HTTP_NOT_FOUND:
-                    URL sUrl = new URL("https://itpolsri.org/ftpclients/cb2016/icons/placeholder.jpeg");
+                    URL sUrl = new URL(local+"placeholder.jpeg");
                     imageIcon = new ImageIcon(sUrl);
                     imageIcon.setImage(resizeImage(imageIcon));
                     break;

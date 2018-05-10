@@ -2,4 +2,4 @@
 *.class
 *.xml
 *.iml
-bin/
+bin/*

@@ -6,9 +6,6 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorCompletionService;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.*;
@@ -198,7 +195,8 @@ public class ChatClient extends javax.swing.JFrame {
 	private void masukButtonActionPerformed(java.awt.event.ActionEvent evt) {
         this.server = serverTextField.getText();
         this.port = new Integer(portTextField.getText());
-        this.username = usernameTextField.getText();
+        this.username = usernameTextField.getText().trim();
+
         start();
     }
  
@@ -271,7 +269,7 @@ public class ChatClient extends javax.swing.JFrame {
                             }
                             break;
                         case "login":
-                            viewTextArea.setText(viewTextArea.getText() + pengirim + " sedah login..." + "\n");
+                            viewTextArea.setText(viewTextArea.getText() + pengirim + " sedang login..." + "\n");
                             clients.add(pengirim);
                             break;
                         case "logout":
@@ -295,7 +293,7 @@ public class ChatClient extends javax.swing.JFrame {
                 } catch (IOException e) {
                     System.out.println("Server has close the connection: " + e);
                     break;
-                } catch (ClassNotFoundException e2) {
+                } catch (ClassNotFoundException ignored) {
                 }
             }
         }

@@ -108,8 +108,6 @@ public class ChatClient extends javax.swing.JFrame {
         viewTextArea.setRows(5);
         viewTextArea.setFocusable(false);
         jScrollPane1.setViewportView(viewTextArea);
- 
-//        jScrollPane2.setViewportView(clientTable);
         jScrollPane2.setViewportView(jList);
 
         postTextField.addActionListener(this::postTextFieldActionPerformed);
@@ -277,15 +275,6 @@ public class ChatClient extends javax.swing.JFrame {
                             clients.remove(pengirim);
                             break;
                         case "list":
-//                            setTable(text);
-//                            String [] rawNames = text.split(":");
-//
-//                            for(String s : rawNames){
-//                                if(!s.equals("---")){
-//                                    Logger.getLogger(ChatClient .class.getName()).info("case::list::rawNames >> " +s);
-//                                }
-//                            }
-
                             Logger.getLogger(ChatClient.class.getName()).info("case::list >> " + text);
                             setJListModel(text);
                             break;

@@ -2,8 +2,6 @@ package multiChatApp;
 
 import javax.swing.*;
 import javax.swing.event.ListDataListener;
-import javax.swing.table.TableCellRenderer;
-import java.awt.*;
 import java.util.List;
 
 public class CustomListModel implements ListModel<String>{

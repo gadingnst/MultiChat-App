@@ -1,21 +1,21 @@
-package multiChatApp;
+package MultiChatApp;
 
 import java.io.*;
 import java.net.*;
 import java.util.*;
 
 public class ChatServer {
- 
+
     private static int uniqueId;
     private ArrayList<ChatServer.ClientThread> clients;
     private int port;
     private boolean keepGoing;
- 
+
     public ChatServer() {
         this.port = 8000;
         clients = new ArrayList<>();
     }
- 
+
     public void start() {
         keepGoing = true;
         try {
@@ -50,7 +50,7 @@ public class ChatServer {
             System.out.println(msg);
         }
     }
- 
+
     private synchronized void send(String message) {
         for (int i = clients.size(); --i >= 0;) {
             ChatServer.ClientThread ct = clients.get(i);
@@ -60,7 +60,7 @@ public class ChatServer {
             }
         }
     }
- 
+
     private String getClients() {
         String s = "";
         for (ClientThread clientThread : clients) {
@@ -70,7 +70,7 @@ public class ChatServer {
         System.out.println(s);
         return s;
     }
- 
+
     private synchronized void remove(int id) {
         for (int i = 0; i < clients.size(); ++i) {
             ChatServer.ClientThread ct = clients.get(i);
@@ -80,20 +80,20 @@ public class ChatServer {
             }
         }
     }
- 
+
     public static void main(String[] args) {
         ChatServer server = new ChatServer();
         server.start();
     }
- 
+
     private class ClientThread extends Thread {
- 
+
         private Socket socket;
         private ObjectInputStream sInput;
         private ObjectOutputStream sOutput;
         private int id;
         private String username;
- 
+
         public ClientThread(Socket socket) {
             id = ++uniqueId;
             this.socket = socket;
@@ -109,11 +109,12 @@ public class ChatServer {
             } catch (ClassNotFoundException e) {
             }
         }
- 
+
         @Override
         public void run() {
-            while (true) {
- 
+            boolean keepGoing = true;
+            while (keepGoing) {
+
                 String message;
                 try {
                     message = sInput.readObject().toString();
@@ -123,13 +124,13 @@ public class ChatServer {
                 } catch (ClassNotFoundException e2) {
                     break;
                 }
- 
+
                 String type = message.split("~")[0];
                 String pengirim = message.split("~")[1];
                 String text = message.split("~")[2];
                 String kepada = message.split("~")[3];
                 String response;
- 
+
                 switch (type) {
                     case "postText":
                         response = "recieveText~" + pengirim + "~" + text + "~" + kepada + "~\n";
@@ -153,11 +154,11 @@ public class ChatServer {
                         break;
                 }
             }
- 
+
             remove(id);
             close();
         }
- 
+
         private void close() {
             try {
                 if (sOutput != null) {
@@ -165,7 +166,6 @@ public class ChatServer {
                 }
             } catch (Exception e) {
             }
-
             try {
                 if (sInput != null) {
                     sInput.close();
@@ -176,10 +176,10 @@ public class ChatServer {
                 if (socket != null) {
                     socket.close();
                 }
-            } catch (Exception ignored) {
+            } catch (Exception e) {
             }
         }
- 
+
         private boolean writeMsg(String msg) {
             if (!socket.isConnected()) {
                 close();

@@ -1,4 +1,4 @@
-package multiChatApp;
+package MultiChatApp;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -7,9 +7,7 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class ChatCellRenderer extends JLabel implements ListCellRenderer<String> {
-
-
+public class ListRenderer extends JLabel implements ListCellRenderer<String> {
     private void validateUsername(String username) {
         String s = username.trim().toLowerCase();
     }

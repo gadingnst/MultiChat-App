@@ -1,4 +1,4 @@
-package multiChatApp;
+package MultiChatApp;
 
 import javax.swing.*;
 import javax.swing.event.ListDataListener;
@@ -32,3 +32,4 @@ public class CustomListModel implements ListModel<String>{
         return;
     }
 }
+

@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/multiChatApp.iml" filepath="$PROJECT_DIR$/multiChatApp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MultiChat-App.iml" filepath="$PROJECT_DIR$/MultiChat-App.iml" />
     </modules>
   </component>
 </project>
